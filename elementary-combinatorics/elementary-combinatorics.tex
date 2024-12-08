@@ -1,0 +1,795 @@
+\documentclass{article} 
+
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{enumerate}
+\usepackage[a4paper, margin=1in]{geometry} 
+\usepackage{titling}
+\usepackage{amssymb}
+\usepackage{lipsum}
+\usepackage{mathtools}
+\usepackage{amsthm} % For proof environments only, labelling of thms done with custom counter
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{textcomp} % TM logo, shits n giggles
+\usepackage{hyperref}
+
+%%% Misc commands %%%
+\newcommand\iidsim{\stackrel{\mathclap{\tiny\mbox{i.i.d}}}{\sim}}
+\newcommand\indist{\stackrel{\mathclap{\tiny\mbox{$\mathcal{D}$}}}{\longrightarrow}}
+\newcommand\nidist{\stackrel{\mathclap{\tiny\mbox{$\mathcal{D}$}}}{\longleftarrow}}
+\newcommand{\indep}{\perp\!\!\!\!\perp} 
+
+\setlength{\parindent}{0pt} % Remove indentation upon new paragraph. 
+
+%%% Title page information %%%
+\title{Elementary Combinatorics}
+\author{Jacob Green}
+\date{\today}
+\newcommand{\subtitle}{}
+\newcommand{\institution}{Department of Mathematical Sciences, The University of Bath}
+\newcommand{\keywords}{Combinatorics, Binomial Coefficients, Pigeonhole Principle, Inclusion Exclusion Principle, 
+Generating Functions, Graph Theory}
+
+\newcounter{statementcount}
+\counterwithin{statementcount}{subsection}
+\renewcommand{\thestatementcount}{\thesection.\arabic{statementcount}}
+\newcounter{claimcount} % Used for proof with lots of claims
+
+\newtcolorbox{definition}[2][auto counter, number within=section]{
+  colback=black!5!white, 
+  colframe=black!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black,
+  title=Definition \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount},
+  #1, % Optional params
+}
+
+\newtcolorbox{lemma}[2][auto counter, number within=section]{
+  colback=blue!5!white, 
+  colframe=blue!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Lemma \thestatementcount $\:$ (#2),
+  before upper = \refstepcounter{statementcount} 
+  #1, % Optional params
+}
+
+\newtcolorbox{example}[2][auto counter, number within=section]{
+  colback=green!5!white, 
+  colframe=green!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Example \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount}
+  #1, % Optional params
+}
+
+\newtcolorbox{problem}[2][auto counter, number within=section]{
+  colback=purple!5!white, 
+  colframe=purple!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Problem \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount}
+  #1, % Optional params
+}
+
+\newtcolorbox{theorem}[2][auto counter, number within=section]{
+  colback=red!5!white,
+  colframe=red!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Theorem \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount},
+  #1, % Optional params
+}
+
+\newtcolorbox{proposition}[2][auto counter, number within=section]{
+  colback=purple!5!white,
+  colframe=purple!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Proposition \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount},
+  #1, % Optional params
+}
+
+\newtcolorbox{corollary}[2][auto counter, number within=section]{
+  colback=yellow!5!white,
+  colframe=yellow!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Corollary \thestatementcount $\:$ (#2),
+  before upper = \refstepcounter{statementcount}, 
+  #1, % Optional params
+}
+
+\newtcolorbox{remark}[2][auto counter, number within=section]{
+  colback=black!5!white,
+  colframe=black!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Remark \thestatementcount $\:$ (#2),
+  before upper = \refstepcounter{statementcount}, 
+  #1, % Optional params
+}
+
+\newtcolorbox{exercise}[2][auto counter, number within=section]{
+  colback=black!5!white,
+  colframe=black!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Exercise \thestatementcount $\:$ #2,
+  before upper = \refstepcounter{statementcount}, 
+  #1, % Optional params
+}
+
+\newtcolorbox[use counter=claimcount]{claim}[1][]{%
+    colback=green!10, 
+    colframe=green!50!black, 
+    coltitle=black, 
+    fonttitle=\bfseries, 
+    boxrule=0.5mm, 
+    colbacktitle=green!30,
+    enhanced, % Allows additional options
+    boxed title style={sharp corners}, 
+    attach title to upper={},
+    titlerule=0mm, 
+    title=Claim: $\;$,
+    before=\par\smallskip\noindent, 
+    #1
+}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    % Adding an image (optional)
+    
+    % Title
+    {\Huge \bfseries \thetitle \par}
+    \vspace{0.5cm}
+    
+    % Subtitle (if any)
+    {\Large \subtitle \par}
+    \vspace{1cm}
+    
+    % Author and institution
+    {\large \theauthor \par}
+    {\institution \par}
+    \vspace{1cm}
+    
+    % Date
+    {\large \thedate \par}
+    \vspace{1.5cm}
+    
+    % Abstract section
+    \begin{abstract}
+        \lipsum[10]
+    \end{abstract}
+    \vspace{1cm}
+    
+    % Keywords section
+    \textbf{Keywords:} \keywords
+    \vfill % Pushes the following content to the bottom
+    
+    % Footer or further information
+    \textit{}
+\end{titlepage}
+
+\newpage 
+
+\setcounter{page}{1} % Start page numbering from 1 after title page
+
+\section*{Preface}
+
+This handout is designed for undergraduates, particularly those with no olympiad training, to learn the elementary theory 
+of combinatorics. Ideally, these notes will provide a good exposure to the basic tricks that will be ``trivial'' 
+in graduate combinatorics courses, and will further motivate the reader to go on and study these graduate courses. 
+Some of my other handouts will explore this material, particularly those on random graphs, random geometric graphs 
+and the probabilistic method in combinatorics. \\
+
+These notes could also be read by a motivated high school student training for olympiads, I also refer such readers 
+to \cite{di2014problem} and \hyperlink{https://yufeizhao.com/olympiad/}{Yufei Zhao's handouts}. I'm sure there are 
+many other great resources if you do a bit of googling, I never did any olympiad training though so I wouldn't know! 
+
+\subsection*{Notation}
+
+\begin{itemize}
+    \item $\mathbb{N} = \{1, 2, \dots\}$ and $\mathbb{N}_0 = \mathbb{N} \cup \{0\}$
+    \item $[n] = \{1, \dots, n\}$
+    \item if $a$ is defined to be $b$ we may say $a := b$ (but I will often forget)
+    \item $A^k = \overbrace{A \times \cdots \times A}^{k \text{ times}}$ for a set $A$, $\times$ being the Cartesian product. 
+\end{itemize}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\setcounter{statementcount}{1}
+
+In combinatorics we are concerned with counting the number of objects from a collection. For example, we may count the positive integers divisible
+by $3$ that are less than $1000$. Here the objects are positive integers are the objects and the collection is those objects that are both divisible 
+by $3$ and less than $1000$. \\
+
+As a set is just is collection of objects, we will often phrase things set theoretically. \\
+
+To begin counting anything interesting, we'll need the following principles. The first two let us count things inductively, the final 
+says it doesn't matter what order we count each element in. These are essentially common sense principles. Regardless, being mathematicians, 
+we will prove these.
+
+\begin{theorem}[]{addition principle}
+    Let $n \in \mathbb{N}$. Let $A_1, \dots, A_n$ be finite sets. One has\footnote{$A_1, \dots, A_n$ are said to be disjoint if 
+    $\cap_{i=1}^n A_i = \emptyset$}
+    \[A_1, \dots, A_n \text{ disjoint} \quad \Longrightarrow \quad |A_1 \cup \cdots \cup A_n| = |A_1| + \cdots + |A_n|\]
+\end{theorem}
+
+To prove this, we simply count both sides one term at a time.
+
+\begin{proof}
+    Let $x \in \cup_{i=1}^n A_i$. Then $x \in A_i$ for exactly one $1 \leq i \leq n$ and hence 
+    \[|A_1| + \cdots + |A_n| =\sum_{x \in A_1}1 + \cdots + \sum_{x \in A_n}1 = \sum_{x \in \cup_{i=1}^n A_i}1 = |A_1 \cup \cdots \cup A_n|\] 
+    by counting both sides term by term.
+\end{proof}
+
+\begin{theorem}[]{multiplication principle}
+    Let $n \in \mathbb{N}$. Let $A_1, \dots, A_n$ be finite sets. One has
+    \[|A_1 \times \cdots \times A_n| = |A_1| \times \cdots \times |A_n|\]
+\end{theorem}
+
+This time we count terms in each slot recursively.
+
+\begin{proof}
+    Consider an arbitrary element $x = (x_1, \dots, x_n) \in A_1 \times \cdots \times A_n$ and let $1 \leq i \leq n$. Then fixing $x_j, j \neq i$
+    we have $|A_i|$ possible choices for $x_i$. Hence, we have 
+    \[|A_1 \times \cdots \times A_n| = \sum_{i=1}^n\sum_{x \in A_i}\left|\cap_{j \neq i}A_j\right| 
+    = \sum_{i=1}^n |A_i|\sum_{x \in A_i}\left|\cap_{j \neq i}A_j\right| = \cdots = |A_1| \times \cdots \times |A_n|\]
+    by repeated application of this reasoning.
+\end{proof}
+
+\begin{theorem}[]{bijection principle}
+    Let $A$ and $B$ be sets. If there is a bijection (i.e. one-to-one mapping) $\pi: A \to B$ then $|A| = |B|$
+\end{theorem}
+
+\begin{proof}
+    This is a truism. 
+\end{proof}
+
+The addition principle can be thought of as emptying two containers of $n$ and $m$ wine bottles and containing how many bottles you have 
+in total ($n+m$), whereas the multiplication principle can be thought of as counting the number of ways of pairing $b$ boys with $g$ girls. 
+The bijection principle says if we take $s$ students and select them one by one at random, $t$ times, we'll always have selected $t$ students. 
+We will often look for such interpretations in combinatorics. \\
+
+With just these principles, we can count all the following quantities. 
+
+\begin{problem}[]{$k$-words with repetitions}
+    How many words length $k$ can be formed from an alphabet with $n$ letters.
+\end{problem}
+
+\begin{proof}[Solution]
+    To count the number of words with repetitions allowed, we sample with replacement to get
+    \[\underbrace{n \times \cdots \times n}_{k \text{ times}} = n^k\]
+    $k$-words (or $k$-sequences or $k$-tuples) on $n$ symbols by the multiplication principle. \\
+\end{proof}
+
+\begin{problem}[]{$k$-words without repetitions}
+    How many words length $k$ with distinct letters can be formed from an alphabet with $n$ letters. 
+\end{problem}
+
+\begin{proof}[Solution]
+    For $k$-words without repetition, we sample without replacement for each letter to get
+    \[n \times (n-1) \times \cdots \times (n-k+1) =: n^{\underline{k}}\]
+    $k$-words without repetition on $n$ symbols by the multiplication principle.\footnote{
+        We call $n^{\underline{k}}$ the falling factorial of $n$}
+\end{proof}
+
+If we were to consider words of length $n$ on $n$ symbols without repetition, then we would be {\it permuting} (i.e. reordering/relabelling) 
+the $n$ symbols. Hence we have $n \times (n-1) \times \cdots \times 1 =: n!$ {\it permutations} on $n$ symbols. 
+Using this notation we have $n^{\underline{k}} = n!/(n-k)!$. \\ 
+
+Suppose we wish to count the number of subsets length $2$ on $n$ symbols. We have $n(n-1)$ ways of choosing 
+$2$ unique elements (i.e. $2$-words without repetition) and we have $2!$ ways of arranging the $2$ unique elements. 
+Hence, as each each $2$ element subset we count gives rise to $2!=2$ $2$-words, we may count these 
+and divide by $2$, obtaining $\frac{1}{2}n(n-1)$ unique $2$-element subsets\footnote{This gives a clever proof that 
+the product of two consecutive integers is divisible by two. We can use combinatorics to prove many number theoretic 
+facts, and this is far from the only example we'll see in this handout.}. This method is often referred to as overcounting and correcting, and 
+gives us another way to count unknown objects with known objects.  
+
+\begin{problem}[]{$k$-subsets}
+    How many subsets size $k$ are there of a set size $n$?
+\end{problem}
+
+\begin{proof}[Solution]
+    Let $x$ be the desired quantity. For each subset size $k$, we may reorder it's elements in $k!$ ways and we 
+    may select $k$ unique elements by counting $k$-words on $n$ symbols without repetition, thus 
+    \[x \cdot k! = \frac{n!}{(n-k)!}\] and dividing by $k!$ gives $x = n!/k!(n-k)! =: \binom{n}{k}$
+\end{proof}
+
+We call $\binom{n}{k}$ the {\it binomial coefficient}, and would say this as ``$n$ choose $k$'' (as this counts the ways of 
+choosing $k$ things from $n$ things). We will dedicate an entire section (in fact, next section) to these. \\ 
+
+In this next problem we will first encounter the idea of ``stars and bars'' counting, which gives us a way of counting 
+the ways to group $n$ indistinguishable objects into $k$ groups. This has many novel uses, like the one we're 
+about to encounter. 
+
+\begin{problem}[]{$k$-multisubsets}
+    How many multisubsets\footnote{a multiset is a set that allows repetition, see https://en.wikipedia.org/wiki/Multiset} of size $k$ are there
+    in a set of $n$ objects?
+\end{problem}
+
+\begin{proof}[Solution]
+    Let $X = \{x_1, \dots, x_n\}$. We call the number of times $x_i, 1 \leq i \leq n$ appears in a multisubset of $X$ the {\it multiplicity} of $x_i$.
+    We know that the size of a multiset is the sum of its multiplicities, thus it suffices to count solutions $(\ell_1, \dots, \ell_n)$ of 
+    nonnegative integers to 
+    \[\ell_1 + \cdots + \ell_n = k\] 
+    which by setting $\ell^\prime := \ell + 1$ is the same as counting positive integer solutions to 
+    \[\ell^\prime_1 + \cdots + \ell^\prime_n = k + n\] Now write this as \[\underbrace{1 + \cdots + 1}_{\ell_1^\prime \text{ times}} + 
+    \cdots + \underbrace{1 + \cdots + 1}_{\ell_n^\prime \text{ times}} = k + n\]
+    We are tasked with dividing up the $k + n$ ones into $n$ groups, which can be done by insering $n-1$ stars in between two ones (not the edges
+    as we require $n$ nonempty collections of ones) to indicate the beginning of a new group. This gives $\binom{n+k-1}{n-1} = \binom{n+k-1}{k}$
+    possibilities.
+\end{proof}
+
+\begin{problem}[]{$k$-partitions with a given sizing}
+    How many ways are there to divide a set partition a set $X$ of size $n$ into sets $X_1, \dots, X_k$ with size $n_1, \dots, n_k$ respectively 
+    (where $n_1 + \cdots + n_k = n$)?
+\end{problem}
+
+\begin{proof}[Solution]
+    There are 
+    \[\binom{n - n_1 - \cdots - n_{i-1}}{n_i}\]
+    ways of choosing the $X_i$ once $X_1, \dots, X_{i-1}$ have been chosen, and 
+    \[\binom{n}{k}\binom{n - k}{m} = \frac{n!}{k!m!(n-k-m)!}\] 
+    So all together one obtains 
+    \[\binom{n}{n_1}\binom{n-n_1}{n_2}\cdots\binom{n - (n_1 + \cdot + n_{k-1})}{n_k} = \frac{n!}{n_1!\cdots n_k!} =: \binom{n}{n_1, \dots, n_k}\]
+    such partitions.\footnote{The quantity $\binom{n}{n_1, \dots, n_k}$ is called the multinomial coefficient}
+\end{proof}
+
+\subsubsection*{Exercises}
+
+\begin{exercise}[]{}
+    In how many ways can $n$ people be seated at a circular table with $n$ seats.
+\end{exercise}
+
+\begin{exercise}[]{}
+    How many subsets are there of the set $\{1, 2, \dots, n\} =: [n]$? How many are of even size? 
+\end{exercise}
+
+\begin{exercise}[]{}
+    There are $2n$ people at a party. How many ways can the $2n$ people split into $n$ pairs? 
+\end{exercise}
+
+\begin{exercise}[]{}
+    A robot is placed on the bottom left of an $n \times n$ chessboard. The robot has two moves, go vertically up one square or 
+    horizontally along (to the right) one square. How many sequences of moves can the robot make to get to the top right square?
+\end{exercise}
+
+\newpage
+
+\section{Binomial Coefficients}
+
+\setcounter{statementcount}{1}
+
+We spend this section proving a myriad of identities concerning binomial coefficients, often providing both an algebraic proof and 
+a combinatorial proof.
+
+\begin{lemma}[]{addition formula}
+    Let $n \in \mathbb{N}$ and $1 \leq k \leq n$. The identity \[\binom{n}{k} = \binom{n-1}{k-1} + \binom{n-1}{k}\] holds.
+\end{lemma}
+
+\begin{proof}[Proof 1]
+    A simple algebraic verification works, I leave this to the reader.
+\end{proof}
+
+We can also prove this identity with the technique of ``double counting''. Intuitively, this is just saying that if we can count things in two 
+ways they must be equal. For example, if we had an $n \times n$ grid full of numbers, we could count the sum of all the numbers by summing along 
+the rows or the columns. For certain selections of numbers, this can yield interesting equalities.  
+
+\begin{proof}[Proof 2]
+    We count the $k$-subsets of $[n]$ in two ways. First, all at once, getting $\binom{n}{k}$ such sets. Secondly, by considering seperately the 
+    cases when $1$ is in our subset and isn't. This gives $\binom{n-1}{k-1}$ choices with $1$ and $\binom{n-1}{k}$ choices without, giving us the 
+    desired equality. 
+\end{proof}
+
+
+\begin{theorem}[]{Binomial theorem}
+    For all integers $n \geq 0$ and $x, y \in \mathbb{C}$, one has
+    \[(x + y)^n = \sum_{k=0}^n \binom{n}{k}x^ky^{n-k}\]
+\end{theorem}
+
+\begin{proof}[Proof 1]
+    We first use a straight forward induction argument. Observe, assuming the hypothesis for some $n \geq 0$ (and noting it trivially holds for $n=0$),
+    \begin{align*}
+        (x+y)^{n+1} &= (x+y)(x+y)^n \\
+        &= (x+y)\sum_{k=0}^n \binom{n}{k}x^k y^{n-k} \\
+        &= \sum_{k=0}^n \binom{n}{k}x^{k+1}y^{n-k} + \sum_{k=0}^n \binom{n}{k}x^k y^{n-k+1} \\
+        &= \sum_{k=0}^{n+1} \left(\binom{n}{k-1} + \binom{n}{k}\right)x^ky^{n - k + 1} \qquad \qquad (\dagger)\\
+        &= \sum_{k=0}^{n+1}\binom{n+1}{k}x^ky^{(n+1)-k}
+    \end{align*}
+    where $(\dagger)$ follows from an index shift ($k \to k-1$) and defining $\binom{n}{k} := 0$ for $k > n$ or $k < 0$.
+\end{proof}
+
+As before, we can double count ourselves a proof of this theorem. 
+
+\begin{proof}[Proof 2]
+    Consider the coefficient of $x^ky^{n-k}$ of \[(x+y)^n = \overbrace{(x+y)\cdots(x+y)}^{n \text{ times}}\] When computing this expansion, 
+    we are multiplying exactly one of $x$ or $y$ from each $(x+y)$ term on the RHS. Our entire expansion will be the sum of all such choices. 
+    Thus, to compute the coefficient of $x^ky^{n-k}$ in $(x+y)^n$, it suffices to count the number of ways to choose exactly $k$ $x$'s out the 
+    $n$ possible choices. This is clearly $\binom{n}{k}$ and hence the result follows. 
+\end{proof}
+
+As an immediate corollary we have the following.
+
+\begin{corollary}[]{sum and alternating sum of binomial coefficients}
+    \[\sum_{k=0}^n \binom{n}{k} = 2^n \qquad \text{and} \qquad \sum_{k=0}^n (-1)^k \binom{n}{k} = 0\]
+\end{corollary}
+
+\begin{proof}[Proof 1]
+    Take $x=y=1$ and $x=1, y=-1$ in the Binomial Theorem. 
+\end{proof}
+
+We may also take a more combinatorial approach to proving these identities. 
+
+\begin{proof}[Proof 2]
+    There are $2^n$ subsets of $[n]$ by counting directly (see exercise 1.2) and by counting each of the subsets size $k$ in groups we get 
+    $\sum_{k=0}^n \binom{n}{k}$, giving the first equivalence. For the second, note there are an equal number of odd and even subsets of $[n]$ 
+    (also exercise 1.2) so we have 
+    \[\sum_{k=0}^n (-1)^k \binom{n}{k} = \sum_{k=0}^n\sum_{\substack{k=0, \\ 2 \mid k}}^n \binom{n}{k} - \sum_{\substack{k=0, \\ 2 \mid k}}^{n} \binom{n}{k} = 0\]
+    giving the latter equivalence.
+\end{proof}
+
+Let us recall the following lemma from (elementary) complex analysis, concerning sums of powers of roots of unity.
+
+\begin{lemma}[]{sums of powers of roots of unity}
+    Let $1, \xi_1, \dots, \xi_{n-1}$ be the $n$-roots of unity, that is the solutions to $z^n = 1, z \in \mathbb{C}$. Then, one has 
+    \[1 + \sum_{j=1}^{n-1} \xi_j^\ell = \begin{cases}n : \ell \equiv 0 \mod n \\ 0 : \ell \not\equiv 0 \mod n\end{cases}\]
+\end{lemma}
+
+\begin{proof}
+    Write $\xi_j = \exp(2\pi i j/n)$. If $\ell = mn, m \in \mathbb{Z}$, then $\xi_j^\ell = \exp(2\pi i m) = 1$ and hence
+    \[1 + \sum_{j=1}^{n-1}\xi_j^\ell = n\] 
+    Conversely, if $\ell = mn + r, m \in \mathbb{Z}, 0 < r < n$ then $\xi_j^\ell = \exp(2\pi i (mn+r)j/n) = \exp(2\pi i jr/n)$ and 
+    \[1 + \sum_{j=1}^{n-1} \xi_j^\ell = \sum_{j=0}^{n-1}\left(\exp(2\pi i r/n)\right)^j = \frac{1 - \exp(2\pi i r)}{1 - \exp(2\pi i r/n)} = 0\]
+    where we used the standard result for the sum of a geometric series in the second equality. 
+\end{proof}
+
+With this we can solve the following problem, a generalisation of corollary 1.3.
+
+\begin{problem}[]{sums of binomial multiples}
+    Compute the following quantity. 
+    \[\sum_{k=0}^n \binom{mn}{mk}\]
+\end{problem}
+
+\begin{proof}[Solution]
+    Let $\xi_0, \dots, \xi_{m-1}$ be the $m^\text{th}$ roots of unity, with $\xi_0 = 1$. Then, by our previous lemma and the Binomial theorem,
+    we can deduce 
+    \[\sum_{k=0}^{n}\binom{mn}{mk} = \sum_{k=0}^{mk}\binom{nm}{k}\left(\frac{1}{m}\sum_{\ell = 0}^{m-1}\xi_\ell^k\right) 
+    = \frac{1}{m}\sum_{\ell = 0}^{m-1} \sum_{k=0}^{mn} \binom{mn}{k}\xi_i^k = \frac{1}{m}\sum_{\ell = 0}^{m-1} (1+\xi_\ell)^{mn}\]
+    We now use the fact that roots of unity appear in conjugate pairs to further simplify the RHS. Let $z = x + iy \in \mathbb{C}$
+    and $n \in \mathbb{N}$. Then \begin{align*}
+        z^n + \bar{z}^n &= (x + iy)^n + (x - iy)^n \\ 
+        &= \sum_{i = 0}^n x^i (iy)^{n-i} + \sum_{i = 0}^n (-1)^i x^i (iy)^{n-i} \\ 
+        &= \sum_{i = 0}^{\lfloor n/2 \rfloor} (-1)^i x^{2i} y^{n - 2i} \\ 
+        &= y^n \sum_{i = 0}^{\lfloor n/2 \rfloor} \left(\frac{x^2}{y^2}\right)^i = y^n 
+        \frac{\left(\frac{x^2}{y^2}\right)^{\lfloor n/2 \rfloor + 1} - 1}{\left(\frac{x^2}{y^2}\right) - 1}
+    \end{align*}
+    Now by Euler's formula, we have $e^{i\theta} = \cos \theta + i \sin \theta$, so we may substitute in 
+    $x = 1 + \cos\theta$ and $y = \sin \theta$ for $\theta = 2k\pi/n$, $k < n/2$ (so that we are in the top half of 
+    the complex plane). For small $m$ (try $m=3$) we will have $\theta$ being so that the exact values of $x$ and $y$ are well 
+    known, and hence we are left with something that simplifies nicely. In general though we are left with something 
+    rather ugly :(
+\end{proof}
+
+\begin{proposition}[]{Vandermonde's Identity}
+    Fix $n, a, b, \in \mathbb{N}$. Then 
+    \[\sum_{k=0}^n \binom{a}{k}\binom{b}{n-k} = \binom{a + b}{n}\]
+\end{proposition}
+
+We observe two proofs, one algebraic and one via double counting. \\ 
+
+The motivation for this first proof comes from the fact we are taking a sum of the form $\sum_{k=0}^n a_kb_{n-k}$, 
+which should remind us of the multiplication of polynomials. 
+
+\begin{proof}[Proof 1]
+    We work by comparing the coefficients of $(1+x)^{a+b} = (1+x)^a(1+x)^b$. By the Binomial theorem, one has
+    \[(1+x)^a (1+x)^b = \left(\sum_{k_1=0}^a \binom{a}{k_1}x^{k_1}\right)\left(\sum_{k_2=0}^b \binom{b}{n - k_2}x^{k_2}\right)
+    = \sum_{n=0}^{a+b}\left(\sum_{k=0}^n \binom{a}{k}\binom{b}{n-k}\right)\]
+    where the last equality comes from computing the polnomial multiplication. Now, applying the Binomial theorem again, see 
+    \[(1+x)^{a+b} = \sum_{n=0}^{a+b}\binom{a+b}{n}x^k\]
+    so by the comparing coefficients of these two polynomials we deduce the result.
+\end{proof}
+
+A nice way to think about this double counting proof is to count the ways of forming a commitee of $n$ people from 
+$a$ boys and $b$ girls, choosing $k$ boys at a time.
+
+\begin{proof}[Proof 2]
+    We count the number of ways to choose subsets size $n$ from $[a+b]$ in two ways. The first, directly, gives 
+    $\binom{a+b}{n}$ choices. The second, is by counting the number of ways to choose such a subset with exactly 
+    $0 \leq k \leq n$ elements in $[a]$. We have $\binom{a}{k}$ ways of choosing the $k$ elements in $[a]$, and 
+    $\binom{b}{n-k}$ ways of choosing the remaining $n-k$ elements from $[a+b] \setminus [a]$. Thus, summing over 
+    $0 \leq k \leq n$ we obtain the desired equality.
+\end{proof}
+
+\begin{proposition}[]{hockeystick lemma}
+    For $n, r \in \mathbb{N}$ with $n \geq r$, one has \[\sum_{k=r}^n \binom{k}{r} = \binom{n+1}{r+1}\]
+\end{proposition}
+
+As usual, there are plenty of ways of proving this. We'll do one algebraic and one combinatorial. 
+
+\begin{proof}[Proof 1]
+    We use the Binomial addition formula to transform our sum into a telescoping series. Observe, 
+    \begin{align*}
+        \sum_{k = r}^n \binom{k}{r} = \sum_{k=r}^n \left[\binom{k+1}{r+1} - \binom{k}{r+1}\right] 
+        = \sum_{k = r+1}^{n+1}\binom{k}{r+1} - \sum_{k = r}\binom{k}{r+1} = \binom{n+1}{r+1} - \binom{r}{r+1} 
+        = \binom{n+1}{r+1}
+    \end{align*}
+    where the first equality is a consequence of Lemma 1.2.1. 
+\end{proof}
+
+This next proof uses the so called ``stars and bars'' method that we encountered last chapter to count the 
+arrangements of $n$ indistinguishable balls into $k$ distinguishable boxes. 
+
+\begin{proof}[Proof 2]
+    We work by double counting the arrangements of $n$ indistinguishable red balls into $k$ 
+    indistinguishable blue balls into $k$ distinguishable boxes. By ``stars and bars'' we have 
+    \[\binom{n+k-1}{k-1}\]
+    such arrangements. Now instead, label the boxes $1, \dots, k$ and count the arrangements with $0 \leq i \leq k$ 
+    blue balls in box $1$. There are 
+    \[\binom{(n+k-2) - i}{k-2}\]
+    such arrangements for each $i$ and hence 
+    \[\binom{n+k-1}{k-1} = \sum_{i = 0}^k \binom{(n+k-2) - i}{k-2}\]
+    Taking $n^\prime = n + k - 2$ and $r = k-2$ we recover 
+    \[\binom{n^\prime+1}{r + 1} = \sum_{i=r}^{n^\prime}\binom{i}{r}\]
+    by reversing the order of summation, which as $k$ and $n$ were arbitrary concludes the proof.
+\end{proof}
+
+\subsection*{Exercises}
+
+\begin{exercise}[]{}
+    How many words length $n$ can be formed from an alphabet of $\ell$ letters $\mathcal{A} = \{A_1, \dots, A_\ell\}$ such that the first letter 
+    $A_1$ occurs an even number of times?
+\end{exercise}
+
+\begin{exercise}[]{}
+    \begin{enumerate}[(i)]
+        \item Using induction, find another proof for the hockeystick lemma.
+        \item By assigning $n-k+1$ labels to the elements of $[n+1]$ or otherwise, find another double counting 
+        proof of the hockeystick lemma.
+    \end{enumerate} 
+\end{exercise}
+
+\begin{exercise}[]{} 
+    Compute \[\sum_{k=0}^n k\binom{n}{k} \quad \text{and} \quad \sum_{k=0}^n k^2\binom{n}{k}\] 
+    algebraically and combinatorially. \\ 
+    ($\star$) Can you find probabilistic proofs of these facts? 
+\end{exercise}
+
+\section{The Pigeonhole Principle}
+
+\setcounter{statementcount}{1}
+
+If I have $5$ pigeons and $4$ containers, each only able to fit one pigeon, can I fit all the pigeons into my containers? Of course not! It turns 
+out this common-sense principle allows us to discover many, many, combinatorial facts$\dots$
+
+\begin{theorem}[]{pigeonhole principle}
+    Given a set $X$ of size $n$, any partition of $X$ into $m < n$ subsets $X_1, \dots, X_m$ must have at least one $X_i$ with $|X_i| > 1$. 
+\end{theorem}
+
+We prove this with the following simple contradiction. 
+
+\begin{proof}
+    Suppose each $|X_i| \leq 1$, then $|X| = |\cup_{i=1}^m X_i| = \sum_{i=1}^m |X_i| \leq m < n$. Absurd!
+\end{proof}
+
+We can do slightly better than this. What if my containers can fit $2$ pigeons and I only have $2$ this time. Then I still can't fit my pigeons 
+into my containers. Formally, 
+
+\begin{theorem}[]{full pigeonhole principle}
+    Given a set $X$ of size $n = km+1$, any partition of $X$ into $m$ subsets $X_1, \dots, X_m$ must have at least one $X_i$ with $|X_i| > k$.
+\end{theorem}
+
+\begin{proof}
+    Suppose each $|X_i| \leq k$, then $|X| = |\cup_{i=1}^m X_i| = \sum_{i=1}^m |X_i| \leq km < n$. Absurd!
+\end{proof}
+
+We also have a infinite pigeonhole principle. If I can only fit a finite number of pigeons into each container then, assuming I only have 
+finitely many containers, I cannot fit an infinite number of pigeons into my containers.
+
+\begin{theorem}[]{infinite pigeonhole principle}
+    Given a set $X$ of infinite cardinality, any partition of $X$ into finitely many sets $X_1, \dots, X_m$ must have some $X_i$ also of infinite 
+    cardinality. 
+\end{theorem}
+
+\begin{proof}
+    Suppose each $|X_i| = n_i < \infty$. Then $|X| = |\cup_{i}^m X_i| = \sum_{i=1}^m |X_i| 
+    = \prod_{i=1}^m n_i < \infty$. Absurd!
+\end{proof}
+
+\begin{problem}[]{monotone subsequences}
+    How large must a sequence of distinct real numbers be to guarantee the existence of a monotone subsequence 
+    size $n + 1$, $n \in \mathbb{N}$? 
+\end{problem}
+
+\begin{proof}[Solution]
+
+\end{proof}
+
+\subsubsection*{Exercises}
+
+\newpage
+
+\section{The Principle of Inclusion-Exclusion}
+
+\setcounter{statementcount}{1}
+
+It is often much easier to count how many objects have properties $A$ AND $B$ than $A$ OR $B$. Thankfully we have the following principle to 
+relate the two.
+
+\begin{proposition}[]{2 variable inclusion exclusion principle}
+    Let $A$ and $B$ be finite sets. Then, 
+    \[|A \cup B| = |A| + |B| - |A \cap B|\]    
+\end{proposition}
+
+For an intuitive argument, just draw a venn diagram. To find the count $A \cup B$ we can count the entire circles
+of $A$ and $B$ individually, but when doing this we count the $A \cap B$ section twice so we must subtract off one 
+lot of it. \\
+
+We prove this by showing for each $x \in A \cup B$, $x$ is counted exactly once in the RHS. 
+
+\begin{proof}
+    Write $|A \cup B| = \sum_{x \in A \cup B}1$.  WLOG take $x \in A$, then either $x \in B$ or $x \not\in B$. In the former 
+    case, $x \in A \cap B$ gives a count of exactly $1$ on the RHS for $x$ and in the latter case $x \not\in A \cap B$ 
+    affirms the same result. Hence $|A| + |B| - |A \cap B| = \sum_{x \in A \cup B}1 = |A \cup B|$. 
+\end{proof}
+
+It turns out this property can be generalised for $n$ finite sets.
+
+\begin{theorem}[]{inclusion exclusion principle}
+    Let $n \in \mathbb{N}$ and $A_1, \dots, A_n$ be finite sets. Then, 
+    \[\left|\bigcup_{i=1}^n A_i\right| = \sum_{\ell = 1}^n (-1)^{\ell-1}\sum_{I \subseteq [n], |I| = \ell} \left|\bigcap_{i \in I}A_i\right|\]
+\end{theorem}
+
+We have two proofs for this. A bashy induction will work, but there is also a clever little trick we can do with indicator functions. 
+
+\begin{proof}[Proof 1]
+    We work via induction$\dots$
+\end{proof}
+
+\begin{proof}[Proof 2]
+    Suppose that all of our subsets lie in a space $\Omega$ and denote $A^c := \Omega \setminus A$ for $A \subseteq \Omega$. Then, 
+    \[{\bf 1}\left[\bigcup_{i=1}^n A_i\right] = {\bf 1}\left[\left(\bigcap_{i=1}^n A_i^c\right)^c\right]
+    = 1 - {\bf 1}\left[\bigcap_{i=1}^n A_i^c\right] = 1 - \prod_{i=1}^n (1 - {\bf 1}[A_i])\]
+    Where ${\bf 1}[A] = 1$ if $x \in A$ and $0$ elsewhere (we call this the indicator function). Now, expanding the 
+    product we see 
+    \[{\bf 1}\left[\bigcup_{i=1}^n A_i\right] 
+    = \sum_{\ell = 1}^n \sum_{I \subseteq [n], \\ |I| = \ell} \, \prod_{i \in I} (- {\bf 1}[A_i])\] 
+    which, summing both sides over $x \in \Omega$, gives the result.
+\end{proof}
+
+We may count, for $n$ divisible by a prime $p$, the number of integers less than or equal to $n$ divisible by $p$ as $n/p$. 
+Recall  that for primes $p, q$ and $n \in \mathbb{N}$, one has $p, q \mid n \Leftrightarrow pq \mid n$. Thus, it is easy to count how 
+many naturals below $n$ are divisible by $p$ and $q$ (just biject), and by the inclusion exclusion principle it must also be easy to 
+count how many naturals below $n$ are divisible by $p$ or $q$. \\
+
+Recall that {\it Euler's totient function} $\phi: \mathbb{N} \to \mathbb{N}$ has $\phi(n) = |\{1 \leq i \leq n : \text{gcd}(i, n) = 1\}|$. 
+That is, $\phi$ counts the number of integers at most $n$ which are coprime to $n$. We will count this quantity directly, working with 
+the reasoning outlined above.
+
+\begin{proposition}[]{explicit form of Euler's $\phi$-function}
+    Let $n \in \mathbb{N}$. Then, letting $\phi$ be Euler's totient function, 
+    \[\phi(n) = n \! \! \! \prod_{\substack{p \mid n, \\ p \text{ prime}}} \! \! \! \left(1 - \frac{1}{p}\right)\]
+\end{proposition}
+
+\begin{proof}
+    Factorise $n = p_1^{\ell_1} \cdots p_k^{\ell_k}$ into primes. Then we have $1 \leq x \leq n$ coprime to $n$ 
+    if and only if $p_1, \dots, p_k \nmid x$. Define $A_p := \{1 \leq x \leq n : p \mid x\} \subseteq [n]$. 
+    By the inclusion exclusion principle we may compute, where compliments are taken with respect to $[n]$, 
+    \begin{align*}
+        \phi(n) &= \left|\bigcap_{i=1}^kA_{p_i}^c\right| = n - \left|\bigcup_{i=1}^k A_{p_i}\right| \tag{1}\\
+        &= n - \sum_{m = 1}^k (-1)^{m-1} \sum_{I \subset [k], |I| = m}\left|\bigcap_{i \in I}A_{p_i}\right| \tag{2}\\
+        &= n - \sum_{m = 1}^k (-1)^{m-1} \sum_{I \subset [k], |I| = m}\frac{n}{\prod_{i \in I}p_i} \tag{3}\\
+        &= n\sum_{m = 0}^k (-1)^{m} \sum_{I \subset [k], |I| = m}\frac{1}{\prod_{i \in I}p_i} \tag{4}
+        = n\prod_{p \mid n}\left(1 - \frac{1}{p}\right)
+    \end{align*}
+    Where in $(1)$ we used DeMorgan's laws, $(2)$ the inclusion exclusion principle, in $(3)$ the fact that 
+    $|\cap_{p \in P}A_p| = n/\prod_{p \in P}$ when $p \in P$ are primes dividing $n$ (easily seen with 
+    $pq \mid n \Leftrightarrow p,q \mid n$) and in (4) the fact $\prod_{i \in I}(1-x_i) = \sum_{J \subseteq I}(-1)^{|J|}\prod_{j \in J}x_j$, 
+    where the empty product is defined as $1$. 
+\end{proof}
+
+We can also use the inclusion exclusion principles to count the number of permutations of $[n]$ with no fixed point, 
+the so called {\it dearrangements} of $[n]$. A fixed point of a permutation $\pi:[n] \to [n]$ is simply an 
+$x \in [n]$ with $\pi(x) = x$. 
+
+\begin{proposition}[]{dearrangements}
+    The number of permutations of $[n]$ with no fixed point is \[n!\sum_{k = 0}^n \frac{(-1)^k}{k!}\]
+\end{proposition}
+
+\begin{proof}
+    This is another direct application of the inclusion exclusion principle. Let $A_i$ be the set of permutations 
+    on $[n]$ with $i$ a fixed point. Then we compute
+    \[
+        \left|\bigcap_{i=1}^n A_i^c\right| = n! - \left|\bigcup_{i = 1}^n A_i\right| = n! - \sum_{k=1}^n
+        \sum_{I \subset [n], |I| = k}\left|\bigcap_{i \in I}A_i\right| = n! - \sum_{k=1}^n (-1)^{k-1}\binom{n}{k}(n-k)! 
+        = n! \sum_{k=0}^n \frac{(-1)^k}{k!}
+    \]
+    using the fact there are $\binom{n}{k}$ subsets $I \subseteq [n]$ of size $k$ and $(n-k)!$ permutations 
+    with $k$ elements fixed. 
+\end{proof}
+
+If we take the limit $n \to \infty$, we see that the probability of a (uniformly) random permutation of $[n]$ having
+no fixed points tends to $1/e$. 
+
+\newpage
+
+\section{Recursion I}
+
+\setcounter{statementcount}{1}
+
+\subsection*{Exercises}
+
+\newpage
+
+\section{Recursion II}
+
+\setcounter{statementcount}{1}
+
+\newpage 
+
+\section{Miscellaneous Topics}
+
+\subsubsection*{Exercises}
+
+\newpage
+
+\section{Additional Problems}
+
+Here I list the exercise solutions in a random order. I will store which exercises have a solution in the README of this repository. 
+
+\begin{proof}[Solution 1.9]
+    We observe that the table has rotational symmetry as the table is round, so that each $n!$ ways we could arrange the people in a line 
+    could sit in $n$ possible ways giving $(n-1)!$ total seatings. 
+\end{proof}
+
+\begin{proof}[Solution 1.10]
+    For the first part I give three solutions.
+    \begin{enumerate}
+        \item We write the set as a binary string. 
+        Map $\mu_A(i) = 1$  if $i \in A$ and $0$ elsewhere in $[n]$ for each subset $A \subseteq [n]$. Then there as each $\mu_A$ 
+        can either have $i = 0$ or $i = 1$ for $i \in [n]$ we have $2^n$ possible choices for the $\mu_A$ which bijects with the subsets 
+        of $[n]$. $\qquad \square$
+        \item We induct. 
+        Clearly there are $2$ subsets of $[1]$, $\emptyset$ and $\{1\}$. Suppose there are $2^{n-1}$ subsets of $[n-1]$. Then for each subset
+        of $[n]$, either $n \in [n]$ or $n \notin [n]$ so we have $2 \times 2^{n-1} =2^n$ subsets of $[n]$ and the induction is complete. $\qquad \square$
+        \item For each $0 \leq k \leq n$ there are $\binom{n}{k}$ subsets of size k so by the binomial theorem there are 
+        $\sum_{k = 0}^n \binom{n}{k} = 2^n$ such subjects. $\qquad \square$ 
+    \end{enumerate}
+    For the second, two. 
+    \begin{enumerate}
+        \item We instead biject from the odd subsets to the even. Consider the map $\mu(A)$ from the subsets of $[n-1]$ to the even sized 
+        subsets of $[n]$ that has $A \mapsto A \cup \{n\}$ iff $|A|$ odd and to itself otherwise. Then $\mu(A)$ has a clear inverse 
+        mapping $A \mapsto A \setminus \{n\}$ iff $|A|$ odd and to itself if $|A|$ even. Hence as $\mu$ bijects we have $2^{n-1}$ such 
+        subsets from the first part. $\qquad \square$
+        \item We have 
+        \[\sum_{\substack{A \subseteq [n] \\ 2 \;  \mid \; |A|}}\binom{n}{|A|} - \sum_{\substack{A \subseteq [n] \\ 2 \; \nmid \; |A|}}\binom{n}{|A|}
+        = \sum_{A \subseteq [n]} \binom{n}{|A|}(-1)^{|A|} = 0\] 
+        from the binomial theorem and hence an equal number of odd and even sized subsets, giving $2^n / 2 = 2^{n-1}$ odd/even subsets. $\qquad \square$
+    \end{enumerate}
+    I'm sure more proofs of these facts exist. Try to come up with some!
+\end{proof}
+
+\begin{proof}[Solution 1.11]
+    Select the pairs sequentially, giving $(n \times (n-1)) \times (n-1) \times (n-2) \times \cdots \times 2 \times 1$ 
+    possible ways of selecting the people, and $(n!)^2$  
+\end{proof}
+
+\bibliographystyle{plain} 
+\bibliography{refs} 
+
+\end{document}

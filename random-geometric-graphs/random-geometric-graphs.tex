@@ -1,0 +1,322 @@
+\documentclass{article} 
+
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{enumerate}
+\usepackage[a4paper, margin=1in]{geometry} 
+\usepackage{titling}
+\usepackage{amssymb}
+\usepackage{lipsum}
+\usepackage{mathtools}
+\usepackage{amsthm} % For proof environments only, labelling of thms done with custom counter
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{textcomp} % TM logo, shits n giggles
+\usepackage{hyperref}
+
+%%% Misc commands %%%
+\newcommand\iidsim{\stackrel{\mathclap{\tiny\mbox{i.i.d}}}{\sim}}
+\newcommand\indist{\stackrel{\mathclap{\tiny\mbox{$\mathcal{D}$}}}{\longrightarrow}}
+\newcommand\nidist{\stackrel{\mathclap{\tiny\mbox{$\mathcal{D}$}}}{\longleftarrow}}
+\newcommand{\indep}{\perp\!\!\!\!\perp} 
+
+\setlength{\parindent}{0pt} % Remove indentation upon new paragraph. 
+
+%%% Title page information %%%
+\title{Random Geometric Graphs}
+\author{Jacob Green}
+\date{\today}
+\newcommand{\subtitle}{}
+\newcommand{\institution}{Department of Mathematical Sciences, The University of Bath}
+\newcommand{\keywords}{Random Geometric Graphs}
+
+\newcounter{statementcount}
+\counterwithin{statementcount}{subsection}
+\renewcommand{\thestatementcount}{\thesection.\arabic{statementcount}}
+\newcounter{claimcount} % Used for proof with lots of claims
+
+\newtcolorbox{definition}[2][auto counter, number within=section]{
+  colback=black!5!white, 
+  colframe=black!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black,
+  title=Definition \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount},
+  #1, % Optional params
+}
+
+\newtcolorbox{lemma}[2][auto counter, number within=section]{
+  colback=blue!5!white, 
+  colframe=blue!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Lemma \thestatementcount $\:$ (#2),
+  before upper = \refstepcounter{statementcount} 
+  #1, % Optional params
+}
+
+\newtcolorbox{example}[2][auto counter, number within=section]{
+  colback=green!5!white, 
+  colframe=green!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Example \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount}
+  #1, % Optional params
+}
+
+\newtcolorbox{problem}[2][auto counter, number within=section]{
+  colback=purple!5!white, 
+  colframe=purple!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Problem \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount}
+  #1, % Optional params
+}
+
+\newtcolorbox{theorem}[2][auto counter, number within=section]{
+  colback=red!5!white,
+  colframe=red!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Theorem \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount},
+  #1, % Optional params
+}
+
+\newtcolorbox{proposition}[2][auto counter, number within=section]{
+  colback=purple!5!white,
+  colframe=purple!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Proposition \thestatementcount $\:$ (#2), 
+  before upper = \refstepcounter{statementcount},
+  #1, % Optional params
+}
+
+\newtcolorbox{corollary}[2][auto counter, number within=section]{
+  colback=yellow!5!white,
+  colframe=yellow!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Corollary \thestatementcount $\:$ (#2),
+  before upper = \refstepcounter{statementcount}, 
+  #1, % Optional params
+}
+
+\newtcolorbox{remark}[2][auto counter, number within=section]{
+  colback=black!5!white,
+  colframe=black!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Remark \thestatementcount $\:$ (#2),
+  before upper = \refstepcounter{statementcount}, 
+  #1, % Optional params
+}
+
+\newtcolorbox{exercise}[2][auto counter, number within=section]{
+  colback=black!5!white,
+  colframe=black!50!white, 
+  fonttitle=\bfseries, 
+  coltitle=black, 
+  title=Exercise \thestatementcount $\:$ #2,
+  before upper = \refstepcounter{statementcount}, 
+  #1, % Optional params
+}
+
+\newtcolorbox[use counter=claimcount]{claim}[1][]{%
+    colback=green!10, 
+    colframe=green!50!black, 
+    coltitle=black, 
+    fonttitle=\bfseries, 
+    boxrule=0.5mm, 
+    colbacktitle=green!30,
+    enhanced, % Allows additional options
+    boxed title style={sharp corners}, 
+    attach title to upper={},
+    titlerule=0mm, 
+    title=Claim: $\;$,
+    before=\par\smallskip\noindent, 
+    #1
+}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    % Adding an image (optional)
+    
+    % Title
+    {\Huge \bfseries \thetitle \par}
+    \vspace{0.5cm}
+    
+    % Subtitle (if any)
+    {\Large \subtitle \par}
+    \vspace{1cm}
+    
+    % Author and institution
+    {\large \theauthor \par}
+    {\institution \par}
+    \vspace{1cm}
+    
+    % Date
+    {\large \thedate \par}
+    \vspace{1.5cm}
+    
+    % Abstract section
+    \begin{abstract}
+        \lipsum[10]
+    \end{abstract}
+    \vspace{1cm}
+    
+    % Keywords section
+    \textbf{Keywords:} \keywords
+    \vfill % Pushes the following content to the bottom
+    
+    % Footer or further information
+    \textit{}
+\end{titlepage}
+
+\newpage 
+
+\setcounter{page}{1} % Start page numbering from 1 after title page
+
+\section*{Preface}
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\setcounter{statementcount}{1}
+
+Consider a (finite) collection of points in space, $X \subset \mathbb{R}^d$. We wish to model the situation 
+where points $x, y \in X$ that are ``close'' are connected. In the graph theoretic sense this would be done by 
+connecting $x$ and $y$ with an edge. Given we are in Euclidean space (but noting this logic can be extendend to 
+arbitrary metric spaces) we can define ``closeness'' with the usual metric on $\mathbb{R}^d$, the Euclidean norm 
+$\lVert \cdot \rVert$. Hence we connect $x \sim y$ iff $\lVert x - y \rVert \leq r$ for some $r > 0$. The resulting 
+graph, the so called {\it geometric graph}, is denoted $G(X, r)$. \\ 
+
+How do we make this random? In the classical Erd\H{o}s-Renyi random graph our randomness comes from the 
+connection criterion on vertices. Here our notion of connectivity is deterministic, so we instead allow the 
+points (vertices) $X \subset \mathbb{R}^d$ to be random. Some classic (and the examples we'll study in this 
+handout) examples are $X = (X_1, \dots, X_n) \sim \text{Unif}[0,1]^d$ and $X \sim \text{PPP}_{[0,1]^d}(\lambda)$, 
+that is $X$ follows a Poisson point process intensity $\lambda$ in the unit hypercube $[0,1]^d$. \\
+
+A classic use case for this model would be the spread of infection in a plant population. If we know roughly 
+the density of plants in a given habitat and how close two plants must be for a given disease to spread between 
+them, we may model the spread of this disease with a random geometric graph (with Poisson vertices). Then we may 
+answer questions like ``What is the maximum number of plants that could be affected by releasing this disease into 
+the population?'' by looking at its connected components, and other similar questions by looking at 
+graph theoretic properties of the random geometric graph. \\ 
+
+In this handout we are concerned with sequences of random geometric graphs on the hypercube $[0,1]^d$. We will 
+work to prove several asymptotic properties of these graphs in the limiting density ($n \to \infty$ or $\lambda 
+\to \infty$ in our previous examples). Let us define our sequences of interest. 
+
+\begin{definition}[]{fixed/poisson vertex random geometric graphs}
+    Let $n \in \mathbb{N}$ and let $\xi_1, \xi_2, \dots$ be independent points in $\mathbb{R}^d$. Let $N_n \sim \text{Po}(n)$ 
+    independently of $\xi_1, \xi_2, \dots$ and consider the two point sets 
+    \[\mathcal{X}_n = \{\xi_1, \dots, \xi_n\} \qquad \text{and} \qquad \mathcal{P}_n = \{\xi_1, \dots, \xi_{N_n}\}\]
+    Let $(r_n)_{n \geq 1}$ be a sequence of positive reals. Then we define, respectively, for $n \geq 1$ the
+    {\it fixed vertex random geometric graphs} and {\it Poisson vertex random geometric graphs} as 
+    \[G(\mathcal{X}_n, r_n) \qquad \text{and} \qquad G(\mathcal{P}_n, r_n)\]
+\end{definition}
+
+We will study properties as $n \to \infty$ in the various cases on the size of $r_n$ as $n \to \infty$. The three 
+types of limit in particular we care about are the so called {\it sparse limit} where $nr_d^n \to 0$, the 
+{\it thermodynamic limit} $nr_n^d = \Theta(1)$ and the {\it dense limit} $nr_n^d \to \infty$. \\ 
+
+It is not immediately obvious that our Poisson vertex random geometric graph $G(\mathcal{P}_n, r_n)$ corresponds 
+to a Poisson point process in $[0,1]^d$, as suggested earlier. Let us prove this fact. 
+
+\begin{proposition}[]{fixed vertex RGG is a Poisson point process}
+    The set $\mathcal{P}_n$ defines a Poisson point process in $[0,1]^d$. That is, for Borel $A, A_1, \dots, A_k \in [0,1]^d$ 
+    \begin{enumerate}[(I)]
+        \item $\mathcal{P}_n(A) \sim \text{Po}(n\lambda(A))$
+        \item $\mathcal{P}_n(A_1), \dots, \mathcal{P}_n(A_k)$ are independent random variables for $A_1, \dots, A_k$ disjoint
+    \end{enumerate}
+    where $\mathcal{P}_n(X)$ denotes the number of points in $\mathcal{P}_n \cap X$ and $\lambda(\cdot)$ is the Lebesgue 
+    measure in $\mathbb{R}^d$. 
+\end{proposition}
+
+\begin{proof}
+    Each $\xi_i$ is in $A \subset [0,1]^d$ with probability $\lambda(A)$. Thus, conditioned on $N_n = m$, $\mathcal{P}_n(A)$ 
+    is a $\text{Binom}(m, \lambda(A))$. Further, considering disjoint $A_1, \dots, A_k \subset [0,1]^d$ and 
+    conditioning on $N_n = m$, we see that the random vector $(\mathcal{P}_n(A_1), \dots, \mathcal{P}_n(A_k))$ is 
+    $\text{Multinom}(k, (\lambda(A_1), \dots, \lambda(A_k)))$. Suppose now that $A_1, \dots, A_k$ partition $[0,1]^d$, 
+    then, letting $m = \sum_{i=1}^k j_k$,
+    \begin{align*}
+        \mathbb{P}[\mathcal{P}_n(A_1) = j_1, \dots, \mathcal{P}_n(A_k) = j_k] &= 
+        \underbrace{\left(\frac{e^{-n}n^m}{m!}\right)}_{\text{Po}(m)} \times 
+        \underbrace{\binom{m}{j_1, \dots, j_k}\prod_{i=1}^k \lambda(A_i)^{j_i}}_{\text{Multinom}(k, (\lambda(A_1), \dots, \lambda(A_k)))} \\ 
+        &= \prod_{i=1}^k \underbrace{\frac{e^{-n\lambda(A_i)}(n\lambda(A_i))^{j_i}}{j_i!}}_{\text{Po}(n\lambda(A_i))}
+    \end{align*}
+    are independent $\text{Po}(n\lambda(A_i))$, which demonstrates the result.
+\end{proof}
+
+Before moving on to edge counts, let us prove one elementary property of random geometric graphs to get a feel 
+for these objects. 
+
+\begin{proposition}[]{expected vertex degrees}
+    Let $D_{i, n}$ denote the degree of vertex $\xi_i$ in $G(\mathcal{X}_n, r_n)$ and $D_{i, n}^\prime$ the degree 
+    of vertex $i$ in $G(\mathcal{X}_n, r_n)$ suppose $r_n \to 0$. Then 
+    \[\mathbb{E}[D_{i, n}], \mathbb{E}[D^\prime_{i, n}] \sim \theta_d n r_n^d\]
+    as $n \to \infty$, where $\theta_d$ is the volume of the unit ball in $\mathbb{R}^d$.
+\end{proposition}
+
+Note that due to points near the boundary we do not get equality. If we were to condition on the event $B_{\xi_i}(r_n) 
+\subset [0,1]^d$ for $n \geq 1$ we would have equality.
+
+\begin{proof}
+    The idea is to use the law of total expectation and the dominated convergence theorem. Observe, conditioning on 
+    $\xi_i = x \in \mathbb{R}^d$, that $D_{i, n} \sim \text{Binom}(n - 1, \lambda(B_x(r_n) \cap [0,1]^d))$ where 
+    $B_x(r_n)$ is the $d$-ball centered at $x$ with radius $r_n$ under the Euclidean norm. Observe,
+    \begin{align*}
+        r_n^{-d}\mathbb{E}[D_{i,n}] &=  
+        \int_{x \in [0,1]^d} r_n^{-d}\mathbb{E}[D_{i, n} | \xi_i = x]\mathrm{d}x \\
+        &= (n-1)\int_{x \in [0,1]^d} r_n^{-d} \lambda(B_x(r_n) \cap [0,1]^d)\mathrm{d}x \\
+        &\sim n\theta_d
+    \end{align*}
+    We apply the dominated convergence theorem in the asymptotic equality, noting that \[r_n^{-d} \lambda(B_x(r_n) \cap [0,1]^d) 
+    \to \theta_d\] almost everywhere in $[0,1]^d$ and is clearly dominated by $1$. The result follows immediately. \\
+\end{proof}
+
+\begin{remark}[]{applying the dominated convergence theorem in 1.3}
+    We multiply through by $r_n^{-d}$ or our integrand $\lambda(B_x(r_n) \cap [0,1]^d)$ will tend pointwise to $0$ 
+    and we will get $n^{-1}\mathbb{E}[D_{i, n}] \to 0$ which is true (assuming $r_n \to 0$) but uninteresting. 
+\end{remark}
+
+
+\section{Edge Counts}   
+
+Throughout this section we will denote the number of edges of $G(\mathcal{X}_n, r_n)$ by $\mathcal{E}_n$ and the 
+number edges of $G(\mathcal{P}_n, r_n)$ by $\mathcal{E}^\prime_n$. Our goal is to find the limiting distribution of 
+these two quantities. \\
+
+Before doing so, we'll first investigate the expected number of edges in such a graph. We apply a classical lemma 
+from graph theory to find the expected number of edges in $G(\mathcal{X}_n, r_n)$. Then for the expected number of 
+edges in $G(\mathcal{P}_n, r_n)$ we'll use properties of the conditional expectation.
+
+\begin{proposition}[]{expected edge counts}
+    In the notation outlined above, 
+    \[\mathbb{E}[\mathcal{E}_n], \mathbb{E}[\mathcal{E}_n^\prime] \sim n^2 r_d^n \theta_d / 2\]
+\end{proposition}
+
+\begin{proof}
+    By the handshaking lemma, linearity of expectations and proposition 1.3, one has 
+    \[2\mathbb{E}[\mathcal{E}_n] = \sum_{i=1}^n \mathbb{E}[D_{1, n}] \sim n^2 \theta_d r_n^d\]
+    and the result follows by dividing through by $2$. Now by the total law of expectations one has 
+    \[\mathbb{E}[\mathcal{E}^\prime_n] = \mathbb{E}[\mathbb{E}[\mathcal{E}_n^\prime | N_n = m]] 
+    = \]
+\end{proof}
+
+\subsection{Edge Distribution}
+
+\subsection{Normal Approximation}
+
+\section{Maximal Degree}
+
+\end{document}
